@@ -16,6 +16,8 @@ StageToRedshiftOperator - Extract data from Bucket S3 and insert into staging ta
 LoadFactOperator - Transform staging data and insert into fact table.
 LoadDimensionOperator - Transform staging data and load dimensions.
 
+![Alt text](images/dag_sparkify.png "DAG")
+
 <h1> Data description </h1>
 
 For this project, you'll be working with two datasets. Here are the s3 links for each:
