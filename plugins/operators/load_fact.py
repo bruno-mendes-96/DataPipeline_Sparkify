@@ -18,13 +18,13 @@ class LoadFactOperator(BaseOperator):
     def __init__(self,
                  redshift_conn_id="",
                  table="",
-                 sql_query="",
+                 insert_statement="",
                  truncate=False,
                  *args, **kwargs):
 
         super(LoadFactOperator, self).__init__(*args, **kwargs)
         self.table = table
-        self.sql_query = sql_query
+        self.insert_statement = insert_statement
         self.redshift_conn_id = redshift_conn_id
         self.truncate=truncate
 
@@ -33,10 +33,10 @@ class LoadFactOperator(BaseOperator):
         
         if self.truncate:
             self.log.info("Clearing data from destination Redshift table")
-            redshift.run("DELETE FROM {}".format(self.table))
+            redshift.run(f"DELETE FROM {self.table}")
 
         self.log.info("Inserting data into table")
-        insert_statement = f"INSERT INTO {self.table} \n" \
-            + self.sql_query
+        insert_statement_completed = f"INSERT INTO {self.table} \n" \
+            + self.insert_statement
 
-        redshift.run(insert_statement)
+        redshift.run(insert_statement_completed)

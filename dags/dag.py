@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
 import datetime
-import os
-from airflow import conf
 from airflow import DAG
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.dummy_operator import DummyOperator
@@ -23,7 +21,7 @@ default_args = {
 dag = DAG(
     'etl_sparkify',
     default_args=default_args,
-    description='Load and transform data in Redshift with Airflow'
+    description='Load and transform Sparkify Data in Redshift with Airflow'
 )
 
 start_operator = DummyOperator(
@@ -47,7 +45,7 @@ stage_events_to_redshift = StageToRedshiftOperator(
     aws_credentials_id="aws_credentials",
     table="staging_events",
     s3_path="s3://udacity-dend/log_data",
-    json_path="s3://udacity-dend/log_json_path.json"
+    metadata_path="s3://udacity-dend/log_json_path.json"
 )
 
 stage_songs_to_redshift = StageToRedshiftOperator(
@@ -58,7 +56,7 @@ stage_songs_to_redshift = StageToRedshiftOperator(
     aws_credentials_id="aws_credentials",
     table="staging_songs",
     s3_path="s3://udacity-dend/song-data/",
-    json_path="auto"
+    metadata_path="auto"
 )
 
 load_songplays_table = LoadFactOperator(
@@ -66,7 +64,7 @@ load_songplays_table = LoadFactOperator(
     dag=dag,
     redshift_conn_id="redshift",
     table="songplays",
-    sql_query=SqlQueries.songplay_table_insert,
+    insert_statement=SqlQueries.songplay_table_insert,
     truncate=False
 )
 
@@ -75,7 +73,7 @@ load_user_dimension_table = LoadDimensionOperator(
     dag=dag,
     redshift_conn_id="redshift",
     table="users",
-    sql_query=SqlQueries.user_table_insert,
+    insert_statement=SqlQueries.user_table_insert,
     truncate=True
 )
 
@@ -84,7 +82,7 @@ load_song_dimension_table = LoadDimensionOperator(
     dag=dag,
     redshift_conn_id="redshift",
     table="songs",
-    sql_query=SqlQueries.song_table_insert,
+    insert_statement=SqlQueries.song_table_insert,
     truncate=True
 )
 
@@ -93,7 +91,7 @@ load_artist_dimension_table = LoadDimensionOperator(
     dag=dag,
     redshift_conn_id="redshift",
     table="artists",
-    sql_query=SqlQueries.artist_table_insert,
+    insert_statement=SqlQueries.artist_table_insert,
     truncate=True
 )
 
@@ -102,7 +100,7 @@ load_time_dimension_table = LoadDimensionOperator(
     dag=dag,
     redshift_conn_id="redshift",
     table="time",
-    sql_query=SqlQueries.time_table_insert,
+    insert_statement=SqlQueries.time_table_insert,
     truncate=True
 )
 
