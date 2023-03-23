@@ -3,6 +3,14 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class LoadDimensionOperator(BaseOperator):
+    """ The Operator receives the following variales:
+    redshift connection, table name, an insert sql query statement.
+    Ideally, this operator truncates the target table before executing the 
+    insert declaration. The dimensions are recalculated.
+
+    Args:
+        BaseOperator: BaseOperator of airflow
+    """
 
     ui_color = '#80BD9E'
 

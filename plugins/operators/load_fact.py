@@ -3,6 +3,14 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class LoadFactOperator(BaseOperator):
+    """  The Operator receives the following variales:
+    redshift connection, table name, an insert sql query statement.
+    Ideally, this operator doesn't truncate the target table before 
+    executing the insert declaration (append only).
+
+    Args:
+        BaseOperator: Base Operator of Airflow
+    """
 
     ui_color = '#F98866'
 
@@ -11,7 +19,7 @@ class LoadFactOperator(BaseOperator):
                  redshift_conn_id="",
                  table="",
                  sql_query="",
-                 truncate=True,
+                 truncate=False,
                  *args, **kwargs):
 
         super(LoadFactOperator, self).__init__(*args, **kwargs)

@@ -11,7 +11,6 @@ class StageToRedshiftOperator(BaseOperator):
         FROM '{}'
         ACCESS_KEY_ID '{}'
         SECRET_ACCESS_KEY '{}'
-        IGNOREHEADER {}
         JSON '{}';
     """
     
@@ -20,7 +19,6 @@ class StageToRedshiftOperator(BaseOperator):
         FROM '{}/{}/{}'
         ACCESS_KEY_ID '{}'
         SECRET_ACCESS_KEY '{}'
-        IGNOREHEADER {}
         JSON '{}';
     """
     
@@ -32,7 +30,6 @@ class StageToRedshiftOperator(BaseOperator):
                  s3_path="",
                  json_path="",
                  delimiter=",",
-                 ignore_headers=1,
                  *args, **kwargs):
 
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
@@ -40,7 +37,6 @@ class StageToRedshiftOperator(BaseOperator):
         self.redshift_conn_id = redshift_conn_id
         self.s3_path = s3_path
         self.delimiter = delimiter
-        self.ignore_headers = ignore_headers
         self.aws_credentials_id = aws_credentials_id
         self.execution_date = kwargs.get('execution_date')
         self.json_path = json_path
@@ -62,7 +58,6 @@ class StageToRedshiftOperator(BaseOperator):
                 self.execution_date.strftime("%d"),
                 credentials.access_key,
                 credentials.secret_key,
-                self.ignore_headers,
                 self.json_path
             )
         else:
@@ -71,7 +66,7 @@ class StageToRedshiftOperator(BaseOperator):
                 self.s3_path, 
                 credentials.access_key,
                 credentials.secret_key,
-                self.ignore_headers,
                 self.json_path
             )
         redshift.run(formatted_sql)
+

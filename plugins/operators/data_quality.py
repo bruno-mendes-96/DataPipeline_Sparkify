@@ -3,6 +3,17 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class DataQualityOperator(BaseOperator):
+    """ DataQualityOpertor receives all tables from star schema and
+    the redshift connection.
+        The Data Quality Operator checks the number of rows of
+    all tables and raises a Value Error in case of empty table. 
+
+    Args:
+        BaseOperator: Airflow Base Operator
+
+    Raises:
+        ValueError: No instances into table
+    """
 
     ui_color = '#89DA59'
 
