@@ -12,9 +12,14 @@ The source data resides in S3 and needs to be processed in Sparkify's data wareh
 Plugins folder contains two repositories: helpers and operators. Helpers contains <code>ceate_tables.py</code> (that stores the DDLs for creating tables) and <code>sql_queries.py</code> (that stores the insert statements). Operators contains four python scripts (one for each operator): <code>data_quality.py</code>, <code>load_dimension.py</code>, <code>load_fact.py</code>, <code>stage_redshift.py</code>. Dags folder contains dag.py script, that loads Operators and set tasks dependencies.
 
 DataQualityOperator - Check data quality of all tables, querying the number of records.
+
 StageToRedshiftOperator - Extract data from Bucket S3 and insert into staging tables.
+
 LoadFactOperator - Transform staging data and insert into fact table.
+
 LoadDimensionOperator - Transform staging data and load dimensions.
+
+This operators are used to extract, transform and load the data into a star schema (a fact songplay table and time, users, artists and songs DIM tables)
 
 ![Alt text](images/dag_sparkify.png "DAG")
 
@@ -22,8 +27,9 @@ LoadDimensionOperator - Transform staging data and load dimensions.
 
 For this project, you'll be working with two datasets. Here are the s3 links for each:
 
-Log data: s3://udacity-dend/log_data
-Song data: s3://udacity-dend/song_data
+Log data: s3://udacity-dend/log_data.
+
+Song data: s3://udacity-dend/song_data.
 
 Log_data brings information regarding the execution of songs by users in the application:
 
