@@ -36,7 +36,6 @@ create_all_tables = PostgresOperator(
     sql=DdlQueries.create_all_tables
 )
 
-
 stage_events_to_redshift = StageToRedshiftOperator(
     task_id='Stage_events',
     provide_context=False,
@@ -68,16 +67,7 @@ load_songplays_table = LoadFactOperator(
     truncate=False
 )
 
-load_user_dimension_table = LoadDimensionOperator(
-    task_id='Load_user_dim_table',
-    dag=dag,
-    redshift_conn_id="redshift",
-    table="users",
-    insert_statement=SqlQueries.user_table_insert,
-    truncate=True
-)
-
-load_song_dimension_table = LoadDimensionOperator(
+load_songs_dimension_table = LoadDimensionOperator(
     task_id='Load_song_dim_table',
     dag=dag,
     redshift_conn_id="redshift",
@@ -86,12 +76,21 @@ load_song_dimension_table = LoadDimensionOperator(
     truncate=True
 )
 
-load_artist_dimension_table = LoadDimensionOperator(
+load_artists_dimension_table = LoadDimensionOperator(
     task_id='Load_artist_dim_table',
     dag=dag,
     redshift_conn_id="redshift",
     table="artists",
     insert_statement=SqlQueries.artist_table_insert,
+    truncate=True
+)
+
+load_users_dimension_table = LoadDimensionOperator(
+    task_id='Load_user_dim_table',
+    dag=dag,
+    redshift_conn_id="redshift",
+    table="users",
+    insert_statement=SqlQueries.user_table_insert,
     truncate=True
 )
 
@@ -120,7 +119,7 @@ end_operator = DummyOperator(
 start_operator >> create_all_tables
 create_all_tables >> [stage_events_to_redshift, stage_songs_to_redshift]
 [stage_events_to_redshift, stage_songs_to_redshift] >> load_songplays_table
-load_songplays_table >> [load_song_dimension_table, load_artist_dimension_table, load_time_dimension_table, load_user_dimension_table]
-[load_song_dimension_table, load_artist_dimension_table, load_time_dimension_table, load_user_dimension_table]>> run_quality_checks
+load_songplays_table >> [load_songs_dimension_table, load_artists_dimension_table, load_time_dimension_table, load_users_dimension_table]
+[load_songs_dimension_table, load_artists_dimension_table, load_time_dimension_table, load_users_dimension_table]>> run_quality_checks
 run_quality_checks >> end_operator
 
